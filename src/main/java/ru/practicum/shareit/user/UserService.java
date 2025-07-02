@@ -12,21 +12,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService implements CrudService<UserDto, User> {
     private final UserRepository repository;
-    private final UserMapper mapper;
 
     @Override
-    public User handlePost(UserDto user) {
-        return repository.create(mapper.toDal(user));
+    public User insert(UserDto user) {
+        return repository.create(UserMapper.toDal(user));
     }
 
     @Override
-    public User handleGet(Long id) {
+    public User get(Long id) {
         return repository.read(id)
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
     }
 
     @Override
-    public User handlePatch(UserDto userDto, Long id) {
+    public User update(UserDto userDto, Long id) {
         Optional<User> user = repository.read(id);
         if (user.isEmpty()) {
             throw new NotFoundException("User with id " + id + " not found");
@@ -48,7 +47,7 @@ public class UserService implements CrudService<UserDto, User> {
 
 
     @Override
-    public void handleDelete(Long id) {
+    public void delete(Long id) {
         repository.delete(id);
     }
 }

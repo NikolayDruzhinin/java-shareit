@@ -17,45 +17,45 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<Item> search(@RequestParam("text") String searchText,
-                             @RequestHeader("X-Sharer-User-Id") String userId) {
-        userService.handleGet(Long.parseLong(userId));
+                             @RequestHeader("X-Sharer-User-Id") final String userId) {
+        userService.get(Long.parseLong(userId));
         return itemService.search(searchText);
     }
 
     @GetMapping("/{id}")
     public Item get(@PathVariable Long id,
-                    @RequestHeader("X-Sharer-User-Id") String userId) {
-        userService.handleGet(Long.parseLong(userId));
-        return itemService.handleGet(id);
+                    @RequestHeader("X-Sharer-User-Id") final String userId) {
+        userService.get(Long.parseLong(userId));
+        return itemService.get(id);
     }
 
     @GetMapping
-    public List<Item> getAll(@RequestHeader("X-Sharer-User-Id") String userId) {
-        userService.handleGet(Long.parseLong(userId));
-        return itemService.handleGetAll(Long.parseLong(userId));
+    public List<Item> getAll(@RequestHeader("X-Sharer-User-Id") final String userId) {
+        userService.get(Long.parseLong(userId));
+        return itemService.getAll(Long.parseLong(userId));
     }
 
     @PostMapping
     public Item post(@Valid @RequestBody ItemDto itemDto,
-                     @RequestHeader("X-Sharer-User-Id") String userId) {
+                     @RequestHeader("X-Sharer-User-Id") final String userId) {
         Long uId = Long.parseLong(userId);
-        userService.handleGet(uId);
+        userService.get(uId);
         itemDto.setOwner(uId);
-        return itemService.handlePost(itemDto);
+        return itemService.insert(itemDto);
     }
 
     @PatchMapping("/{id}")
     public Item patch(@PathVariable Long id,
                       @RequestBody ItemDto itemDto,
-                      @RequestHeader("X-Sharer-User-Id") String userId) {
+                      @RequestHeader("X-Sharer-User-Id") final String userId) {
         Long uId = Long.parseLong(userId);
-        userService.handleGet(uId);
+        userService.get(uId);
         itemDto.setOwner(uId);
-        return itemService.handlePatch(itemDto, id);
+        return itemService.update(itemDto, id);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        itemService.handleDelete(id);
+        itemService.delete(id);
     }
 }

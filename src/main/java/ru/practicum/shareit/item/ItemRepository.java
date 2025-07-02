@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.common.CrudRepository;
+import ru.practicum.shareit.common.ItemCrudRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class ItemRepository implements CrudRepository<Item> {
+public class ItemRepository implements ItemCrudRepository {
     private final Map<Long, Item> items = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong(0);
 
@@ -23,7 +23,7 @@ public class ItemRepository implements CrudRepository<Item> {
 
     @Override
     public Optional<Item> read(Long id) {
-        return Optional.of(items.get(id));
+        return Optional.ofNullable(items.get(id));
     }
 
     @Override
@@ -44,6 +44,7 @@ public class ItemRepository implements CrudRepository<Item> {
                 .toList();
     }
 
+    @Override
     public List<Item> search(String searchText) {
         return items.values().stream()
                 .filter(item -> item.getName() != null && item.getAvailable() != null)

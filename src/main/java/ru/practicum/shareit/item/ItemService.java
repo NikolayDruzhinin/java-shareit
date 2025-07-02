@@ -2,7 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.common.CrudService;
+import ru.practicum.shareit.common.ItemCrudService;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.ArrayList;
@@ -11,27 +11,27 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ItemService implements CrudService<ItemDto, Item> {
+public class ItemService implements ItemCrudService {
     private final ItemRepository repository;
-    private final ItemMapper mapper;
 
     @Override
-    public Item handlePost(ItemDto itemDto) {
-        return repository.create(mapper.toDal(itemDto));
+    public Item insert(ItemDto itemDto) {
+        return repository.create(ItemMapper.toDal(itemDto));
     }
 
     @Override
-    public Item handleGet(Long id) {
+    public Item get(Long id) {
         return repository.read(id)
                 .orElseThrow(() -> new NotFoundException("Item with id " + id + " not found"));
     }
 
-    public List<Item> handleGetAll(Long userId) {
+    @Override
+    public List<Item> getAll(Long userId) {
         return repository.readAll(userId);
     }
 
     @Override
-    public Item handlePatch(ItemDto itemDto, Long id) {
+    public Item update(ItemDto itemDto, Long id) {
         Optional<Item> inMemoryItem = repository.read(id);
         if (inMemoryItem.isEmpty()) {
             throw new NotFoundException("Item with id " + id + " not found");
@@ -49,7 +49,7 @@ public class ItemService implements CrudService<ItemDto, Item> {
     }
 
     @Override
-    public void handleDelete(Long id) {
+    public void delete(Long id) {
         repository.delete(id);
     }
 

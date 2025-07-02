@@ -12,25 +12,25 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User get(@PathVariable Long id) {
-        return userService.handleGet(id);
+        return userService.get(id);
     }
 
     @PostMapping
     public User post(@Valid @RequestBody UserDto userDto) {
-        return userService.handlePost(userDto);
+        return userService.insert(userDto);
     }
 
     @PatchMapping("/{id}")
     public User patch(@PathVariable(required = false) String id,
                       @RequestBody UserDto userDto) {
         if (id.equals("null")) {
-            return userService.handlePost(userDto);
+            return userService.insert(userDto);
         }
-        return userService.handlePatch(userDto, Long.parseLong(id));
+        return userService.update(userDto, Long.parseLong(id));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        userService.handleDelete(id);
+        userService.delete(id);
     }
 }
