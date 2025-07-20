@@ -1,62 +1,21 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.practicum.shareit.common.ItemCrudService;
-import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.Collection;
 
-@Service
-@AllArgsConstructor
-public class ItemService implements ItemCrudService {
-    private final ItemRepository repository;
+public interface ItemService {
+    ItemDto getItemById(long itemId);
 
-    @Override
-    public Item insert(ItemDto itemDto) {
-        return repository.create(ItemMapper.toDal(itemDto));
-    }
+    Collection<ItemDto> getUserItems(long userId);
 
-    @Override
-    public Item get(Long id) {
-        return repository.read(id)
-                .orElseThrow(() -> new NotFoundException("Item with id " + id + " not found"));
-    }
+    Collection<ItemDto> itemsSearch(long userId, String text);
 
-    @Override
-    public List<Item> getAll(Long userId) {
-        return repository.readAll(userId);
-    }
+    ItemDto createItem(long userId, ItemDto item);
 
-    @Override
-    public Item update(ItemDto itemDto, Long id) {
-        Optional<Item> inMemoryItem = repository.read(id);
-        if (inMemoryItem.isEmpty()) {
-            throw new NotFoundException("Item with id " + id + " not found");
-        }
-        if (!inMemoryItem.get().getOwner().equals(itemDto.getOwner())) {
-            throw new NotFoundException("Invalid owner of item with id " + id);
-        }
-        inMemoryItem.get().setOwner(itemDto.getOwner());
-        inMemoryItem.get().setDescription(itemDto.getDescription());
-        inMemoryItem.get().setAvailable(itemDto.getAvailable());
-        inMemoryItem.get().setName(itemDto.getName());
-        inMemoryItem.get().setRequest(itemDto.getRequest());
-        repository.update(inMemoryItem.get());
-        return inMemoryItem.get();
-    }
+    ItemDto updateItem(long userId, long itemId, ItemDto item);
 
-    @Override
-    public void delete(Long id) {
-        repository.delete(id);
-    }
-
-    public List<Item> search(String searchText) {
-        if (searchText.isBlank()) {
-            return new ArrayList<>();
-        }
-        return repository.search(searchText);
-    }
+    CommentDto addComment(long userId, long itemId, CommentCreateDto comment);
 }
