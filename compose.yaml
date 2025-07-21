@@ -91,7 +91,7 @@ services:
       
         CREATE TABLE IF NOT EXISTS comments (
           id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-          text VARCHAR(1000), 
+          content VARCHAR(1000), 
           item_id BIGINT NOT NULL, 
           author_id BIGINT NOT NULL,
           CONSTRAINT fk_comments_to_items FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,

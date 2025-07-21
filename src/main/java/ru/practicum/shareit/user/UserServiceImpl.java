@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new ValidationException("User email is required!");
         }
-        userRepository.throwIfEmailTaken(null, user.getEmail());
         User userModel = UserMapper.toModel(user);
         return UserMapper.toDto(userRepository.save(userModel));
     }
@@ -33,7 +32,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(long userId, UserDto user) {
         User userModel = userRepository.findByIdOrThrow(userId);
-        userRepository.throwIfEmailTaken(userId, user.getEmail());
         if (user.getName() != null && !user.getName().isBlank()) {
             userModel.setName(user.getName());
         }
